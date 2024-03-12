@@ -1,18 +1,26 @@
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { addTodo } from '../features/todo/todoSlice'
+import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { addTodo } from '../features/todo/todoSlice';
 
 function AddTodo() {
-    const [todoText, setTodoText] = useState('')
-    const [todoDescription, setTodoDescription] = useState('')
-    const dispatch = useDispatch()
+    const [todoText, setTodoText] = useState(localStorage.getItem('todoText') || '');
+    const [todoDescription, setTodoDescription] = useState(localStorage.getItem('todoDescription') || '');
+    const dispatch = useDispatch();
 
     const addTodoHandler = (e) => {
-        e.preventDefault()
-        dispatch(addTodo({ text: todoText, description: todoDescription }))
-        setTodoText('')
-        setTodoDescription('')
-    }
+        e.preventDefault();
+        dispatch(addTodo({ text: todoText, description: todoDescription }));
+        setTodoText('');
+        setTodoDescription('');
+    };
+
+    // Save data to localStorage on input change
+    useEffect(() => {
+        localStorage.setItem('todoText', todoText);
+
+        localStorage.setItem('todoDescription', todoDescription);
+        // console.log(todoText);
+    }, [todoText, todoDescription]);
 
     return (
         <div>

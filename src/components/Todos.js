@@ -42,7 +42,7 @@ function Todos() {
                             />
                         </div>
                     ) : (
-                        <div className='flex items-center text-left'>
+                        <div className='flex items-center text-center'>
                             <div className='mr-5'>{todo.text}</div>
                             <div>{todo.description}</div>
                         </div>
