@@ -9,19 +9,46 @@ function AddTodo() {
     const [todoDescription, setTodoDescription] = useState(localStorage.getItem('todoDescription') || '');
     const dispatch = useDispatch();
 
-    const addTodoHandler = (e) => {
+    const addTodoHandler = async (e) => {
         e.preventDefault();
-        dispatch(addTodo({ text: todoText, description: todoDescription }));
-        setTodoText('');
-        setTodoDescription('');
-    };
+        try {
+            // Dispatch action to add todo to Redux store
+            dispatch(addTodo({ text: todoText, description: todoDescription }));
+
+            // Send data to server
+            const res = await fetch("http://localhost:5000/add-tickets", {
+                method: "POST",
+                body: JSON.stringify({
+                    title: todoText,
+                    description: todoDescription
+                }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            const data = await res.json();
+            if (res.status === 500 || !data) {
+                window.alert("Invalid Entry");
+                console.log("Invalid Entry");
+            } else {
+                window.alert("Valid Entry");
+                console.log("Valid Entry");
+            }
+            
+            // Clear input fields
+            setTodoText('');
+            setTodoDescription('');
+        } catch (error) {
+            console.error("Error:", error);
+            window.alert("An error occurred while adding the todo.");
+        }
+    }
 
     // Save data to localStorage on input change
     useEffect(() => {
         localStorage.setItem('todoText', todoText);
-
         localStorage.setItem('todoDescription', todoDescription);
-        // console.log(todoText);
     }, [todoText, todoDescription]);
 
     return (
